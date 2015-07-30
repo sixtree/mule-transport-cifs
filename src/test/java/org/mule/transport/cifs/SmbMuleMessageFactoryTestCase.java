@@ -37,7 +37,7 @@ public class SmbMuleMessageFactoryTestCase extends AbstractMuleMessageFactoryTes
     @Override
     protected MuleMessageFactory doCreateMuleMessageFactory()
     {
-        return new SmbMuleMessageFactory(muleContext);
+        return new SmbMuleMessageFactory();
     }
 
     @Override
@@ -71,8 +71,10 @@ public class SmbMuleMessageFactoryTestCase extends AbstractMuleMessageFactoryTes
     public void messageShouldHaveTransportSpecificMessageProperties() throws Exception
     {
         MuleMessage message = createMuleMessageFromValidTransportMessage();
-        assertEquals(MOCK_FILENAME, message.getOutboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
-        assertEquals(MOCK_LENGTH, message.getOutboundProperty(FileConnector.PROPERTY_FILE_SIZE));
+        assertEquals(MOCK_FILENAME, message.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+        assertEquals(MOCK_LENGTH, message.getInboundProperty(FileConnector.PROPERTY_FILE_SIZE));
+        
+        assertEquals(MOCK_FILENAME, message.getOutboundProperty(FileConnector.PROPERTY_FILENAME));
     }
 
     private MuleMessage createMuleMessageFromValidTransportMessage() throws Exception
@@ -80,7 +82,7 @@ public class SmbMuleMessageFactoryTestCase extends AbstractMuleMessageFactoryTes
         MuleMessageFactory factory = createMuleMessageFactory();
 
         Object payload = getValidTransportMessage();
-        return factory.create(payload, encoding);
+        return factory.create(payload, encoding, muleContext);
     }
 }
 

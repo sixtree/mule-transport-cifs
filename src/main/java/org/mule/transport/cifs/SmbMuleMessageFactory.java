@@ -11,10 +11,11 @@
 package org.mule.transport.cifs;
 
 import org.mule.DefaultMuleMessage;
-import org.mule.api.MuleContext;
 import org.mule.transport.AbstractMuleMessageFactory;
 import org.mule.transport.file.FileConnector;
 import org.mule.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
@@ -22,10 +23,7 @@ import jcifs.smb.SmbFile;
 
 public class SmbMuleMessageFactory extends AbstractMuleMessageFactory
 {
-    public SmbMuleMessageFactory(MuleContext context)
-    {
-        super(context);
-    }
+	private static final Logger log = LoggerFactory.getLogger(SmbMessageRequesterFactory.class);
 
     @Override
     protected Class<?>[] getSupportedTransportMessageTypes()
@@ -50,7 +48,11 @@ public class SmbMuleMessageFactory extends AbstractMuleMessageFactory
     {
         SmbFile file = (SmbFile) transportMessage;
 
-        muleMessage.setOutboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME, file.getName());
-        muleMessage.setOutboundProperty(FileConnector.PROPERTY_FILE_SIZE, file.length());
+        muleMessage.setInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME, file.getName());
+        muleMessage.setInboundProperty(FileConnector.PROPERTY_FILE_SIZE, file.length());
+        
+        muleMessage.setOutboundProperty(FileConnector.PROPERTY_FILENAME, file.getName());
+        
+        log.debug("SMB MuleMessage: {}", muleMessage);
     }
 }

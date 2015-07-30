@@ -14,8 +14,11 @@ import org.mule.api.MuleMessage;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.endpoint.InboundEndpoint;
 import org.mule.transport.AbstractMessageRequester;
+import org.mule.util.StringUtils;
 
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +99,71 @@ public class SmbMessageRequester extends AbstractMessageRequester
         }
 
         // TODO why not use the fileList above?
-        return createMuleMessage(file);
+        MuleMessage msg = createMuleMessage(file);
+        postProcess(file, msg);
+        return msg;
+    }
+    
+    protected void postProcess(SmbFile file, MuleMessage message) throws Exception
+    {
+    	String moveToDir = smbConnector.getMoveToDirectory();
+    	String moveToPattern = smbConnector.getMoveToPattern();
+        if (!StringUtils.isEmpty(moveToDir))
+        {
+            String destinationFileName = file.getName();
+
+            if (!StringUtils.isEmpty(moveToPattern))
+            {
+                destinationFileName = (smbConnector).getFilenameParser().getFilename(message, moveToPattern);
+            }
+
+            SmbFile dest;
+            EndpointURI uri = endpoint.getEndpointURI();
+
+            if (SmbConnector.checkNullOrBlank(uri.getUser()) || SmbConnector.checkNullOrBlank(uri.getPassword()))
+            {
+                dest = new SmbFile("smb://" + uri.getHost() + moveToDir + destinationFileName);
+            }
+            else
+            {
+            	String url = "smb://" + uri.getUser() + ":" + uri.getPassword() + "@" + uri.getHost() + moveToDir + destinationFileName;
+                dest = new SmbFile(url);
+            }
+
+            logger.debug("dest: " + dest);
+
+            try
+            {
+                file.renameTo(dest);
+            }
+            catch (Exception e)
+            {
+                throw new IOException(MessageFormat.format(
+                    "Failed to rename file " + file.getName() + " to " + dest.getName() + ". Smb error! "
+                                    + e.getMessage(), new Object[]{ file.getName(),
+                        moveToDir + destinationFileName, e }));
+            }
+
+            logger.debug("Renamed processed file " + file.getName() + " to " + moveToDir
+                         + destinationFileName);
+        }
+        else
+        {
+            try
+            {
+                file.delete();
+            }
+            catch (Exception e)
+            {
+                throw new IOException(MessageFormat.format("Failed to delete file " + file.getName()
+                                                           + ". Smb error: " + e.getMessage(),
+                    file.getName(), null));
+            }
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Deleted processed file " + file.getName());
+            }
+        }
     }
 }
