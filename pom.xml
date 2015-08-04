@@ -96,20 +96,64 @@
     </dependencies>
 
     <repositories>
-   		<repository>
+        <repository>
+            <id>Central</id>
+            <name>Central</name>
+            <url>http://repo1.maven.org/maven2/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>mulesoft-snapshots</id>
+            <name>MuleSoft Snapshots Repository</name>
+            <url>http://repository.mulesoft.org/snapshots/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
         	<id>mulesoft-public</id>
         	<name>MuleSoft Public Repository</name>
         	<url>http://repository.mulesoft.org/nexus/content/groups/public/</url>
         </repository>
-           <repository>
-            <id>mule-deps</id>
-            <name>Mule Dependencies</name>
-            <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
+        <!-- Backlist defunct codehaus repositories -->
+        <repository>
+            <id>codehaus-releases</id>
+            <name>Codehaus Releases</name>
+            <url>http://repository.codehaus.org/</url>
+            <layout>default</layout>
             <releases>
-                <enabled>false</enabled>
+            	<enabled>false</enabled>
             </releases>
             <snapshots>
-                <enabled>false</enabled>
+            	<enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>codehaus-snaphosts</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <layout>default</layout>
+            <releases>
+            	<enabled>false</enabled>
+            </releases>
+            <snapshots>
+            	<enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>codehaus</id>
+            <name>Codehaus</name>
+            <url>http://repository.codehaus.org/</url>
+            <layout>default</layout>
+            <releases>
+            	<enabled>false</enabled>
+            </releases>
+            <snapshots>
+            	<enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
