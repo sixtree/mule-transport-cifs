@@ -96,12 +96,17 @@
     </dependencies>
 
     <repositories>
-            <repository>
+   		<repository>
+        	<id>mulesoft-public</id>
+        	<name>MuleSoft Public Repository</name>
+        	<url>http://repository.mulesoft.org/nexus/content/groups/public/</url>
+        </repository>
+           <repository>
             <id>mule-deps</id>
             <name>Mule Dependencies</name>
             <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
